@@ -1,0 +1,24 @@
+clc, clearvars, close all;
+sheet = 12;
+data = xlsread('Cluster_Data_HDBSCAN.xlsx', sheet);
+time_series_data = data(:,4);
+
+% Define the AR model order
+p = 2; % Choose an appropriate order for the AR model
+
+% Fit the AR model using Yule-Walker method
+ar_coeffs = aryule(time_series_data, p);
+
+% Predict the values using the AR model
+predicted_values = filter([0 -ar_coeffs(2:end)], 1, time_series_data);
+
+% Plot both actual and predicted values on the same graph
+figure;
+hold on;
+plot(time_series_data, 'b', 'DisplayName', 'Actual Values'); % Plot actual values in blue
+plot(predicted_values, 'r', 'DisplayName', 'Predicted Values'); % Plot predicted values in red
+title('Actual vs Predicted Values (AR Model)');
+xlabel('Time');
+ylabel('Values');
+legend('show');
+hold off;
